@@ -1,0 +1,1420 @@
+@use 'sass:map';
+
+/* ==========================================================================
+   1. ПЕРЕМЕННЫЕ
+   ========================================================================== */
+
+// Цвет
+$color-bg: #ffffff;
+$color-surface: #ffffff;
+$color-ink: #171717;
+$color-muted: #686868;
+$color-line: #e7e7eb;
+$color-accent: #1010c8;
+$color-accent-strong: #08089b;
+$color-accent-soft: #ededff;
+$color-success: #12805c;
+$color-mint: #ddf3ea;
+$color-on-dark: #ffffff;
+
+// Шрифты
+$font-display: 'Cormorant Garamond', Georgia, serif;
+$font-body: 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
+$font-code: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+// Размеры текста
+$fs-sm: 0.875rem;
+$fs-base: 1rem;
+$fs-lg: 1.125rem;
+$fs-h2: clamp(1.5rem, 4.5vw, 2.25rem);
+
+// Отступы
+$space-1: 0.25rem;
+$space-2: 0.5rem;
+$space-3: 0.75rem;
+$space-4: 1rem;
+$space-5: 1.5rem;
+$space-6: 2rem;
+$space-7: 3rem;
+$space-8: 4.5rem;
+$space-9: 6.5rem;
+
+// Радиусы: мелкие элементы, кнопки и карточки, крупные поверхности
+$radius-sm: 6px;
+$radius-md: 12px;
+$radius-lg: 20px;
+$radius-pill: 999px;
+
+// Прочее
+$header-h: 4rem;
+$container-max: 1120px;
+$gutter: 1.25rem;
+$transition: 0.2s ease;
+
+// Брейкпоинты (mobile-first): sm — от 480, md — от 768, lg — от 1024
+$breakpoints: (
+  sm: 480px,
+  md: 768px,
+  lg: 1024px,
+);
+
+/* ==========================================================================
+   2. МИКСИНЫ
+   ========================================================================== */
+
+@mixin up($key) {
+  @media (min-width: map.get($breakpoints, $key)) {
+    @content;
+  }
+}
+
+@mixin down($key) {
+  @media (max-width: map.get($breakpoints, $key) - 1px) {
+    @content;
+  }
+}
+
+@mixin focus-ring {
+  &:focus-visible {
+    outline: 3px solid $color-accent;
+    outline-offset: 3px;
+  }
+}
+
+@mixin card-hover {
+  transition: border-color $transition, transform $transition;
+
+  &:hover {
+    border-color: $color-accent;
+    transform: translateY(-4px);
+  }
+}
+
+/* ==========================================================================
+   3. БАЗА
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+// :where даёт нулевую специфичность — классы блоков всегда сильнее
+:where(h1, h2, h3, p, ul, ol, pre, figure) {
+  margin: 0;
+}
+
+:where(ul[class], ol[class]) {
+  padding: 0;
+  list-style: none;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: $header-h + $space-4;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: $font-body;
+  font-size: $fs-base;
+  line-height: 1.6;
+  color: $color-ink;
+  background: $color-bg;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   4. УТИЛИТЫ И ОБЩИЕ БЛОКИ
+   ========================================================================== */
+
+.container {
+  width: min(100% - #{$gutter * 2}, $container-max);
+  margin-inline: auto;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: $space-4;
+  z-index: 200;
+  padding: $space-2 $space-4;
+  background: $color-ink;
+  color: $color-on-dark;
+  border-radius: $radius-sm;
+
+  &:focus {
+    top: $space-2;
+  }
+}
+
+// ---- Кнопки ----
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-3 $space-5;
+  border: 1px solid transparent;
+  border-radius: $radius-md;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background $transition, color $transition, border-color $transition, transform $transition;
+
+  @include focus-ring;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &--primary {
+    background: $color-accent;
+    color: $color-on-dark;
+
+    &:hover {
+      background: $color-accent-strong;
+    }
+  }
+
+  &--secondary {
+    background: $color-surface;
+    border-color: $color-line;
+    color: $color-ink;
+
+    &:hover {
+      border-color: $color-accent;
+      color: $color-accent;
+    }
+  }
+
+  &--small {
+    padding: $space-2 $space-4;
+    font-size: $fs-sm;
+  }
+}
+
+.header__cta.btn--primary {
+  background: #fff;
+  color: $color-accent;
+  border-color: #fff;
+
+  &:hover { background: $color-accent-soft; }
+}
+
+// ---- Бейджи, теги, чипы ----
+.badge,
+.tag,
+.chip {
+  display: inline-block;
+  font-size: $fs-sm;
+  line-height: 1.3;
+}
+
+.badge {
+  padding: $space-1 $space-3;
+  background: $color-surface;
+  border: 1px solid $color-line;
+  border-radius: $radius-pill;
+  font-weight: 500;
+  transition: border-color $transition, color $transition;
+
+  &:hover {
+    border-color: $color-accent;
+    color: $color-accent;
+  }
+}
+
+.tag {
+  padding: 2px $space-2;
+  background: $color-accent-soft;
+  color: $color-accent-strong;
+  border-radius: $radius-sm;
+  font-weight: 500;
+}
+
+.chip {
+  padding: $space-1 $space-3;
+  background: $color-bg;
+  border: 1px solid $color-line;
+  border-radius: $radius-pill;
+}
+
+// ---- Сетка карточек ----
+.grid {
+  display: grid;
+  gap: $space-5;
+
+  &--cards {
+    grid-template-columns: 1fr;
+
+    @include up(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include up(lg) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+// ---- Секция ----
+.section {
+  padding-block: $space-8;
+
+  @include up(lg) {
+    padding-block: $space-9;
+  }
+
+  &--tinted {
+    background: $color-surface;
+    border-block: 1px solid $color-line;
+  }
+
+  &__head {
+    margin-bottom: $space-6;
+  }
+
+  &__title {
+    font-family: $font-display;
+    font-weight: 600;
+    font-size: $fs-h2;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  &__lead {
+    margin-top: $space-3;
+    max-width: 46ch;
+    color: $color-muted;
+  }
+
+  // Заголовок слева, содержимое справа
+  &__layout {
+    display: grid;
+    gap: $space-6;
+
+    @include up(lg) {
+      grid-template-columns: 1fr 2fr;
+      gap: $space-8;
+      align-items: start;
+    }
+
+    .section__head {
+      margin-bottom: 0;
+
+      @include up(lg) {
+        position: sticky;
+        top: $header-h + $space-6;
+      }
+    }
+  }
+}
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(28px) scale(.985);
+  transition: opacity .72s ease-out var(--reveal-delay, 0ms), transform .72s cubic-bezier(.2, .7, .2, 1) var(--reveal-delay, 0ms);
+
+  &.is-revealed {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ==========================================================================
+   5. HEADER
+   ========================================================================== */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: $color-accent;
+  color: $color-on-dark;
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    min-height: 3rem;
+  }
+
+  &__logo {
+    position: relative;
+    top: 3px;
+    margin-right: auto;
+    font-family: 'La Belle Aurore', cursive;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 1.65rem;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+
+    @include focus-ring;
+
+    @include up(md) {
+      margin-right: 0;
+      font-size: 1.8rem;
+    }
+  }
+
+  // Мобильное меню — выпадающая панель
+  &__nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    padding: $space-2 $gutter $space-5;
+    background: $color-accent;
+
+    @include up(md) {
+      display: block;
+      position: static;
+      margin-inline: auto;
+      padding: 0;
+      background: none;
+      border: 0;
+    }
+  }
+
+  &.is-open &__nav {
+    display: block;
+  }
+
+  &__burger {
+    @include up(md) {
+      display: none;
+    }
+  }
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+
+  @include up(md) {
+    flex-direction: row;
+    gap: $space-1;
+  }
+
+  &__link {
+    display: block;
+    padding: $space-3 0;
+      color: rgba($color-on-dark, 0.78);
+    font-weight: 500;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: color $transition, border-color $transition;
+
+    @include focus-ring;
+
+    @include up(md) {
+      padding: $space-2 $space-3;
+    }
+
+    &:hover {
+      color: $color-on-dark;
+    }
+
+    &.is-active {
+      color: $color-on-dark;
+      border-bottom-color: $color-on-dark;
+    }
+  }
+}
+
+.burger {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: 1px solid rgba($color-on-dark, .45);
+  border-radius: $radius-md;
+  cursor: pointer;
+
+  @include focus-ring;
+
+  &__bar,
+  &__bar::before,
+  &__bar::after {
+    position: absolute;
+    left: 12px;
+    width: 18px;
+    height: 2px;
+    background: $color-on-dark;
+    border-radius: 2px;
+    transition: transform $transition, opacity $transition;
+  }
+
+  &__bar {
+    top: 20px;
+  }
+
+  &__bar::before,
+  &__bar::after {
+    content: '';
+    left: 0;
+  }
+
+  &__bar::before {
+    top: -6px;
+  }
+
+  &__bar::after {
+    top: 6px;
+  }
+
+  &[aria-expanded='true'] &__bar {
+    background: transparent;
+  }
+
+  &[aria-expanded='true'] &__bar::before {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  &[aria-expanded='true'] &__bar::after {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+}
+
+/* ==========================================================================
+   6. HERO
+   ========================================================================== */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@keyframes ticker {
+  to { transform: translateX(-25%); }
+}
+
+.hero {
+  position: relative;
+  display: grid;
+  min-height: calc(100svh - 3rem);
+  overflow: hidden;
+  background: #fff;
+
+  &__inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: clamp(4.5rem, 13vh, 8rem);
+    text-align: center;
+  }
+
+  &__title {
+    max-width: 95vw;
+    font-family: $font-display;
+    font-weight: 400;
+    font-size: clamp(2.1rem, 5.5vw, 3.7rem);
+    line-height: 1.08;
+  }
+
+  &__role {
+    margin-top: $space-3;
+    color: $color-muted;
+    font-size: $fs-sm;
+    letter-spacing: .04em;
+  }
+
+  &__art {
+    position: absolute;
+    inset: 48% -5% auto;
+    height: clamp(15rem, 34vw, 20rem);
+    transform: translateY(-5%);
+  }
+
+  &__rail {
+    position: absolute;
+    top: 50%;
+    left: -75%;
+    display: flex;
+    align-items: center;
+    width: 250%;
+    height: 2rem;
+    overflow: hidden;
+    background: $color-accent;
+    color: #fff;
+    font-family: $font-code;
+    font-size: clamp(.58rem, 1.15vw, .8rem);
+    font-weight: 500;
+    letter-spacing: .08em;
+
+    &--one { transform: translateY(-50%) rotate(10deg); }
+    &--two { transform: translateY(-50%) rotate(-10deg); }
+    &--two .hero__ticker { animation-direction: reverse; }
+  }
+
+  &__ticker {
+    display: block;
+    flex: 0 0 auto;
+    width: max-content;
+    white-space: nowrap;
+    animation: ticker 30s linear infinite;
+  }
+
+  &__orb {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: clamp(11rem, 24vw, 16rem);
+    aspect-ratio: 1;
+    overflow: hidden;
+    border: 8px solid #fff;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 1px rgba($color-accent, .12);
+    transform: translate(-50%, -50%);
+  }
+
+  &__portrait {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 38%;
+  }
+
+  &__scroll {
+    position: absolute;
+    z-index: 2;
+    bottom: 1.5rem;
+    left: 50%;
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    color: $color-muted;
+    font-size: $fs-sm;
+    text-decoration: none;
+    transform: translateX(-50%);
+
+    span { color: $color-accent; font-size: 1.25rem; }
+  }
+}
+
+// Единственная анимация загрузки на странице: появление первого экрана
+@media (prefers-reduced-motion: no-preference) {
+  .hero__content > *, .hero__art {
+    animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  @for $i from 1 through 6 {
+    .hero__content > :nth-child(#{$i}) {
+      animation-delay: #{$i * 0.06}s;
+    }
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__ticker { animation: none; }
+}
+
+/* ---- Demo: одна кнопка в Figma и в SCSS ---- */
+
+.demo {
+  background: $color-surface;
+  border: 1px solid $color-ink;
+  border-radius: $radius-lg;
+  padding: $space-3;
+  box-shadow: 8px 8px 0 $color-accent-soft;
+
+  &__tabs {
+    display: flex;
+    gap: $space-1;
+    margin-bottom: $space-3;
+    padding: $space-1;
+    background: $color-bg;
+    border-radius: $radius-md;
+  }
+
+  &__tab {
+    flex: 1;
+    padding: $space-2 $space-3;
+    background: none;
+    border: 0;
+    border-radius: $radius-sm;
+    font-weight: 600;
+    color: $color-muted;
+    cursor: pointer;
+    transition: background $transition, color $transition;
+
+    @include focus-ring;
+
+    &.is-active {
+      background: $color-surface;
+      color: $color-ink;
+    }
+  }
+
+  &__panel {
+    min-height: 240px;
+  }
+
+  &__canvas {
+    display: grid;
+    place-items: center;
+    min-height: 240px;
+    background-image: radial-gradient($color-line 1px, transparent 1px);
+    background-size: 16px 16px;
+    border-radius: $radius-md;
+  }
+
+  &__frame {
+    position: relative;
+    padding: $space-5;
+    outline: 1px dashed $color-accent;
+    outline-offset: 0;
+  }
+
+  &__label {
+    position: absolute;
+    padding: 1px $space-1;
+    background: $color-accent;
+    color: $color-on-dark;
+    border-radius: 3px;
+    font-family: $font-code;
+    font-size: 0.6875rem;
+    line-height: 1.4;
+
+    &--padding {
+      top: -9px;
+      left: -1px;
+    }
+
+    &--radius {
+      bottom: -9px;
+      right: -1px;
+    }
+  }
+
+  &__button {
+    padding: $space-4 $space-6;
+    background: $color-accent;
+    color: $color-on-dark;
+    border: 0;
+    border-radius: $radius-md;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform $transition, background $transition;
+
+    @include focus-ring;
+
+    &:hover {
+      background: $color-accent-strong;
+      transform: translateY(-2px);
+    }
+  }
+
+  &__caption {
+    margin-top: $space-3;
+    padding-inline: $space-1;
+    font-size: $fs-sm;
+    color: $color-muted;
+  }
+}
+
+.code {
+  min-height: 240px;
+  margin: 0;
+  padding: $space-5;
+  overflow-x: auto;
+  background: $color-ink;
+  color: #d7defa;
+  border-radius: $radius-md;
+  font-family: $font-code;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+
+  @include focus-ring;
+
+  &__sel {
+    color: #9fb0ff;
+  }
+
+  &__prop {
+    color: #7fd6b2;
+  }
+
+  &__val {
+    color: #ffd58a;
+  }
+}
+
+/* ==========================================================================
+   7. EXPERIENCE: TIMELINE
+   ========================================================================== */
+
+.timeline {
+  position: relative;
+  padding-left: $space-5;
+  border-left: 2px solid $color-line;
+
+  &__item {
+    position: relative;
+    padding-bottom: $space-6;
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+
+    // Точка на линии. Заполнена у текущего места работы
+    &::before {
+      content: '';
+      position: absolute;
+      top: 1.65rem;
+      left: calc(-1 * (#{$space-5} + 7px));
+      width: 12px;
+      height: 12px;
+      background: $color-bg;
+      border: 2px solid $color-accent;
+      border-radius: 50%;
+      transition: transform $transition, background $transition;
+    }
+
+    &--current::before {
+      background: $color-accent;
+    }
+
+    &:hover::before {
+      transform: scale(1.35);
+    }
+  }
+
+  &__card {
+    padding: $space-5;
+    background: $color-surface;
+    border: 1px solid $color-line;
+    border-radius: $radius-md;
+    transition: border-color $transition, transform $transition;
+
+    &:hover {
+      border-color: $color-accent;
+      transform: translateX(4px);
+    }
+  }
+
+  &__role {
+    font-size: $fs-lg;
+    line-height: 1.35;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-1 $space-4;
+    margin-top: $space-1;
+    font-size: $fs-sm;
+    color: $color-muted;
+
+    span {
+      font-weight: 600;
+      color: $color-ink;
+    }
+  }
+
+  &__result {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: $space-1 $space-3;
+    margin-top: $space-4;
+    padding: $space-3 $space-4;
+    max-width: 68ch;
+    border-left: 4px solid $color-accent;
+    border-radius: $radius-sm;
+    background: $color-accent-soft;
+    font-weight: 600;
+
+    &-label {
+      color: $color-accent-strong;
+      font-size: $fs-sm;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    strong {
+      color: $color-accent-strong;
+      font-size: 1.25rem;
+    }
+  }
+
+  &__list {
+    display: grid;
+    gap: $space-2;
+    margin-top: $space-4;
+    padding-left: $space-5;
+    max-width: 68ch;
+    list-style: disc;
+
+    strong {
+      color: $color-accent-strong;
+      font-weight: 650;
+    }
+
+    li::marker {
+      color: $color-accent;
+    }
+  }
+}
+
+/* ==========================================================================
+   8. EDUCATION
+   ========================================================================== */
+
+.edu-card {
+  display: flex;
+  flex-direction: column;
+  padding: $space-5;
+  background: $color-bg;
+  border: 1px solid $color-line;
+  border-radius: $radius-md;
+
+  @include card-hover;
+
+  &__type {
+    display: inline-block;
+    margin-bottom: 0;
+    padding: 0;
+    font-size: $fs-sm;
+    font-weight: 600;
+
+    &--degree {
+      color: $color-accent-strong;
+    }
+
+    &--cert {
+      color: $color-success;
+    }
+
+    &--course {
+      color: $color-success;
+    }
+  }
+
+  &__honor {
+    color: #c62828;
+    font-weight: 700;
+  }
+
+  &__title {
+    font-size: $fs-lg;
+    line-height: 1.35;
+  }
+
+  &__org {
+    margin-top: auto;
+    padding-top: $space-2;
+    font-size: $fs-sm;
+    font-weight: 500;
+    color: $color-muted;
+  }
+
+  &__text {
+    margin-top: $space-3;
+    color: $color-muted;
+  }
+}
+
+.education-groups {
+  display: grid;
+  gap: $space-7;
+}
+
+.education-group:first-child .grid--cards {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+}
+
+.education-group:not(:first-child) .grid--cards {
+  @include up(lg) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.education-group:first-child .edu-card__title {
+  min-height: calc(2 * 1.35em);
+}
+
+.education-group__title {
+  margin-bottom: $space-4;
+  font-family: $font-body;
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* ==========================================================================
+   9. PROJECTS
+   ========================================================================== */
+
+.project-grid {
+  @include up(lg) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.project {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: $color-surface;
+  border: 1px solid $color-line;
+  border-radius: $radius-md;
+
+  @include card-hover;
+
+  // Превью собраны из CSS, чтобы не зависеть от картинок. Замените на <img> при желании
+  &__preview {
+    display: grid;
+    aspect-ratio: 16 / 10;
+    place-items: center;
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+
+    &:focus-visible {
+      outline: 3px solid $color-accent;
+      outline-offset: -3px;
+    }
+
+    &::before,
+    &::after {
+      content: '';
+      grid-area: 1 / 1;
+      transition: transform 0.4s ease;
+    }
+
+    &--one {
+      background: $color-accent-soft;
+
+      &::before {
+        width: 38%;
+        height: 78%;
+        border-radius: $radius-lg;
+        background:
+          linear-gradient($color-accent, $color-accent) 16% 14% / 46% 8px no-repeat,
+          linear-gradient($color-line, $color-line) 16% 28% / 68% 6px no-repeat,
+          linear-gradient($color-line, $color-line) 16% 36% / 54% 6px no-repeat,
+          linear-gradient($color-accent-soft, $color-accent-soft) 50% 62% / 68% 16% no-repeat,
+          linear-gradient($color-accent, $color-accent) 50% 90% / 68% 10% no-repeat,
+          $color-surface;
+      }
+    }
+
+    &--two {
+      background: $color-accent;
+
+      &::before {
+        width: 78%;
+        height: 62%;
+        border-radius: $radius-md;
+        background:
+          linear-gradient($color-accent, $color-accent) 8% 88% / 8% 40% no-repeat,
+          linear-gradient($color-accent-soft, $color-accent-soft) 24% 88% / 8% 55% no-repeat,
+          linear-gradient($color-accent, $color-accent) 40% 88% / 8% 30% no-repeat,
+          linear-gradient($color-accent-soft, $color-accent-soft) 56% 88% / 8% 70% no-repeat,
+          linear-gradient($color-line, $color-line) 8% 12% / 30% 8px no-repeat,
+          $color-surface;
+      }
+
+      &::after {
+        justify-self: end;
+        align-self: start;
+        width: 22%;
+        aspect-ratio: 1;
+        margin: 10% 8% 0 0;
+        border-radius: 50%;
+        background: $color-mint;
+      }
+    }
+
+    &--three {
+      background: $color-mint;
+
+      &::before {
+        width: 62%;
+        aspect-ratio: 5 / 3;
+        background:
+          linear-gradient($color-accent, $color-accent) 0 0 / 30% 46% no-repeat,
+          linear-gradient($color-surface, $color-surface) 50% 0 / 30% 46% no-repeat,
+          linear-gradient($color-ink, $color-ink) 100% 0 / 30% 46% no-repeat,
+          linear-gradient($color-surface, $color-surface) 0 100% / 30% 46% no-repeat,
+          linear-gradient($color-ink, $color-ink) 50% 100% / 30% 46% no-repeat,
+          linear-gradient($color-accent, $color-accent) 100% 100% / 30% 46% no-repeat;
+        border-radius: $radius-sm;
+      }
+    }
+
+    &--image {
+      display: block;
+      background: $color-ink;
+
+      &::before,
+      &::after { display: none; }
+    }
+
+    &--contain .project__image {
+      object-fit: contain;
+    }
+  }
+
+  &__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform .5s ease;
+  }
+
+  &:hover &__preview::before,
+  &:hover &__preview::after {
+    transform: scale(1.06);
+  }
+
+  &:hover &__image { transform: scale(1.035); }
+
+  &__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: $space-5;
+  }
+
+  &__title {
+    font-size: $fs-lg;
+    line-height: 1.35;
+  }
+
+  &__eyebrow {
+    margin-bottom: $space-2;
+    color: $color-accent;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  &__text {
+    margin-top: $space-2;
+    color: $color-muted;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+    margin-top: $space-4;
+  }
+
+  &__result {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    margin-top: $space-5;
+    padding-top: $space-4;
+    border-top: 1px solid $color-line;
+    color: $color-muted;
+    font-size: $fs-sm;
+    line-height: 1.4;
+
+    strong {
+      flex: 0 0 auto;
+      color: $color-accent;
+      font-family: $font-display;
+      font-size: 2.5rem;
+      font-weight: 500;
+      line-height: 1;
+    }
+  }
+
+  &__recognition {
+    margin-top: $space-4;
+    padding: $space-3 $space-4;
+    border-left: 3px solid $color-accent;
+    background: $color-accent-soft;
+    color: $color-accent-strong;
+    font-size: $fs-sm;
+    font-weight: 600;
+  }
+
+  &__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-3 $space-5;
+    margin-top: auto;
+    padding-top: $space-5;
+
+    .project__link {
+      margin-top: 0;
+      padding-top: 0;
+    }
+  }
+
+  &__link {
+    align-self: flex-start;
+    margin-top: auto;
+    padding-top: $space-5;
+    font-weight: 600;
+    color: $color-accent-strong;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: transparent;
+    transition: text-decoration-color $transition;
+
+    @include focus-ring;
+
+    &:hover {
+      text-decoration-color: currentColor;
+    }
+  }
+
+  &__note {
+    margin-top: auto;
+    padding-top: $space-5;
+    color: $color-muted;
+    font-size: $fs-sm;
+  }
+}
+
+/* ==========================================================================
+   10. SKILLS
+   ========================================================================== */
+
+.section--skills {
+  .section__head {
+    margin-bottom: $space-5;
+    text-align: center;
+  }
+}
+
+.skills-grid {
+  width: min(100%, 72rem);
+  margin-inline: auto;
+  grid-template-columns: 1fr;
+
+  @include up(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: $space-6;
+  }
+}
+
+.skills {
+  padding: $space-5;
+  background: $color-bg;
+  border: 1px solid $color-line;
+  border-radius: $radius-md;
+
+  @include card-hover;
+
+  &__title {
+    font-size: $fs-lg;
+  }
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+    margin-top: $space-4;
+
+    .chip {
+      transition: background $transition, border-color $transition, color $transition, transform $transition;
+
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          transform: translateY(-2px);
+          border-color: $color-accent;
+          background: $color-accent-soft;
+          color: $color-accent-strong;
+        }
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+   11. FOOTER / CONTACTS
+   ========================================================================== */
+
+.contact {
+  padding-top: $space-8;
+  background: #f7f7fa;
+  color: $color-ink;
+  border-top: 1px solid $color-line;
+
+  &__inner {
+    display: grid;
+    gap: $space-7;
+
+    @include up(lg) {
+      grid-template-columns: 1fr 1fr;
+      gap: $space-8;
+      align-items: start;
+    }
+  }
+
+  &__title {
+    font-family: $font-display;
+    font-weight: 600;
+    font-size: $fs-h2;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  &__text {
+    margin-top: $space-4;
+    max-width: 44ch;
+    color: $color-muted;
+  }
+
+  &__copy {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-2 $space-4;
+    width: 100%;
+    max-width: 440px;
+    margin-top: $space-5;
+    padding: $space-4 $space-5;
+    background: rgba($color-on-dark, 0.06);
+    border: 1px solid rgba($color-on-dark, 0.25);
+    border-radius: $radius-md;
+    text-align: left;
+    cursor: pointer;
+    transition: background $transition, border-color $transition;
+
+    @include focus-ring;
+
+    &:hover {
+      background: $color-accent;
+      border-color: $color-accent;
+      color: $color-on-dark;
+    }
+
+    &.is-copied {
+      background: $color-success;
+      border-color: $color-success;
+      color: $color-on-dark;
+    }
+  }
+
+  &__copy-value {
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+
+  &__copy-action {
+    font-size: $fs-sm;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  &__links {
+    border-top: 1px solid $color-line;
+  }
+
+  &__link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: $space-1 $space-4;
+    padding: $space-4 0;
+    border-bottom: 1px solid $color-line;
+    color: inherit;
+    text-decoration: none;
+    transition: color $transition;
+
+    @include focus-ring;
+
+    &:hover .contact__link-name {
+      color: $color-accent;
+    }
+  }
+
+  &__link-name {
+    font-family: $font-body;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: .01em;
+  }
+
+  &__link-handle {
+    font-size: .9375rem;
+    font-weight: 500;
+    color: #4d4d58;
+    overflow-wrap: anywhere;
+  }
+
+  &__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: $space-3;
+    margin-top: $space-8;
+    padding-block: $space-5;
+    border-top: 1px solid $color-line;
+    font-size: $fs-sm;
+    color: $color-muted;
+  }
+
+  &__top {
+    @include focus-ring;
+  }
+}
